@@ -52,10 +52,22 @@ class Sistema implements ISistema {
   public emprestimos: IEmprestimo[] = [];
   public juros = 1.01; //Juros de 1% ao dia
   novoUsuario(usuario: IUsuario) {
-    this.usuarios.push(usuario);
+    const usuarioExiste: IUsuario | undefined = this.usuarios.find(element => element === usuario);
+    if(usuarioExiste === undefined){
+      this.usuarios.push(usuario);
+    }
+    else{
+      console.log("Usuário já existe no sistema.");
+    }
   }
   novoEmprestimo(emprestimo: IEmprestimo) {
-    this.emprestimos.push(emprestimo);
+    const emprestimoExiste: IEmprestimo | undefined = this.emprestimos.find(element => element === emprestimo);
+    if(emprestimoExiste === undefined){
+      this.emprestimos.push(emprestimo);
+    }
+    else{
+      console.log("Empréstimo já existe no sistema.");
+    }
   }
   obterEmprestimos(nm_credor: string, nm_devedor: string): void {
     const listaEmprestimos: IEmprestimo[] = this.emprestimos.filter(
