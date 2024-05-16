@@ -70,17 +70,18 @@ class Sistema implements ISistema {
       (element) =>
         element.credor.nome === nm_credor && element.devedor.nome === nm_devedor
     );
-    listaEmprestimos.forEach((element) => {
-      console.log(
-        `Valor do juros do empréstimo de ${element.credor} e ${
-          element.devedor
-        } com valor igual a ${element.valor} R$ = ${this.obterValorAtualizado(
-          element.valor,
-          element.data
-        )}`
-      );
+    this.emprestimos.forEach((element, index) => {
+      if (listaEmprestimos.includes(element)) {
+        console.log(
+          `Valor do juros do empréstimo de ${element.credor.nome} e ${
+            element.devedor.nome
+          } com valor igual a ${element.valor} R$ = ${this.obterValorAtualizado(
+            element.valor,
+            element.data
+          )} posição: ${index}`
+        );
+      }
     });
-    console.log(listaEmprestimos);
   }
   obterValorAtualizado(valor_inicial: number, data_inicial: Date): number {
     let valor_atualizado: number = valor_inicial;
@@ -112,5 +113,16 @@ class Sistema implements ISistema {
 const sistema = new Sistema();
 sistema.novoUsuario(new Usuario("pedro", "123"));
 sistema.novoUsuario(new Usuario("maria", "456"));
+sistema.novoUsuario(new Usuario("joao", "789"));
+sistema.novoEmprestimo(
+  new Emprestimo(new Date(), 100, sistema.usuarios[0], sistema.usuarios[1])
+);
+sistema.novoEmprestimo(
+  new Emprestimo(new Date(), 100, sistema.usuarios[0], sistema.usuarios[1])
+);
+sistema.novoEmprestimo(
+  new Emprestimo(new Date(), 100, sistema.usuarios[1], sistema.usuarios[2])
+);
+sistema.obterEmprestimos("pedro", "maria");
 
 //Senha: 2963
