@@ -1,3 +1,4 @@
+import promptSync from "prompt-sync"
 interface IUsuario {
   nome: string;
   senha: string;
@@ -50,20 +51,22 @@ class Emprestimo implements IEmprestimo {
 class Sistema implements ISistema {
   public usuarios: IUsuario[] = [];
   public emprestimos: IEmprestimo[] = [];
-  public juros = 1.01; //Juros de 1% ao dia
+  public juros = 1.01; //Juros de 0,1% ao dia
   novoUsuario(usuario: IUsuario) {
     const usuarioExiste: IUsuario | undefined = this.usuarios.find(element => element === usuario);
     if(usuarioExiste === undefined){
       this.usuarios.push(usuario);
+      console.log(`Usuário '${usuario.nome}' foi criado!`);
     }
     else{
-      console.log("Usuário já existe no sistema.");
+      console.log(`Usuário '${usuario.nome}' já existe no sistema!`);
     }
   }
   novoEmprestimo(emprestimo: IEmprestimo) {
     const emprestimoExiste: IEmprestimo | undefined = this.emprestimos.find(element => element === emprestimo);
     if(emprestimoExiste === undefined){
       this.emprestimos.push(emprestimo);
+      console.log("Empréstimo criado!");
     }
     else{
       console.log("Empréstimo já existe no sistema.");
@@ -74,17 +77,19 @@ class Sistema implements ISistema {
       (element) =>
         element.credor.nome === nm_credor && element.devedor.nome === nm_devedor
     );
-    listaEmprestimos.forEach((element) => {
+    listaEmprestimos.forEach((element, index) => {
       console.log(
-        `Valor do juros do empréstimo de ${element.credor} e ${
-          element.devedor
+        `Valor do juros da posição ${index+1} empréstimo de ${element.credor.nome} e ${
+          element.devedor.nome
         } com valor igual a ${element.valor} R$ = ${this.obterValorAtualizado(
           element.valor,
           element.data
         )}`
       );
     });
-    console.log(listaEmprestimos);
+    if(listaEmprestimos.length === 0){
+      console.log("Nenhum empréstimo encontrado.");
+    }
   }
   obterValorAtualizado(valor_inicial: number, data_inicial: Date): number {
     let valor_atualizado: number = valor_inicial;
@@ -98,23 +103,63 @@ class Sistema implements ISistema {
     const userExists: IEmprestimo | undefined = this.emprestimos.find(
       (element) => element.credor.senha === senha
     );
-    if (userExists !== undefined) {
+    const emprestimoExiste: IEmprestimo | undefined = this.emprestimos.find(element => element === slc_emprestimo)
+    if (userExists !== undefined && emprestimoExiste !== undefined) {
       const index: number = this.emprestimos.findIndex(
         (element) => element === slc_emprestimo
       );
       console.log(
-        `Valor pago: ${this.obterValorAtualizado(
+        `Valor do ${index+1}° empréstimo pago: ${this.obterValorAtualizado(
           slc_emprestimo.valor,
           slc_emprestimo.data
         )} R$`
       );
       this.emprestimos.splice(index, 1);
     }
+    else{
+      console.log("Emprestimo não existe ou senha do credor inválida!");
+    }
   }
 }
 
 const sistema = new Sistema();
-sistema.novoUsuario(new Usuario("pedro", "123"));
-sistema.novoUsuario(new Usuario("maria", "456"));
+
+sistema.novoUsuario(new Usuario("Joao", "468"));
+sistema.novoUsuario(new Usuario("Antonio", "897"));
+sistema.novoUsuario(new Usuario("Maria", "547"));
+sistema.novoUsuario(new Usuario("Jose", "123"));
+sistema.novoEmprestimo(new Emprestimo(new Date("2023-09-03"), 10, sistema.usuarios[0], sistema.usuarios[2]))
+sistema.novoEmprestimo(new Emprestimo(new Date("2023-09-04"), 12, sistema.usuarios[1], sistema.usuarios[2]))
+sistema.novoEmprestimo(new Emprestimo(new Date("2023-09-04"), 5, sistema.usuarios[1], sistema.usuarios[3]))
+sistema.novoEmprestimo(new Emprestimo(new Date("2023-09-05"), 3, sistema.usuarios[1], sistema.usuarios[2]))
+sistema.novoEmprestimo(new Emprestimo(new Date("2023-09-05"), 18, sistema.usuarios[0], sistema.usuarios[2]))
+
+const prompt = promptSync()
+
+console.log("")
+console.log("")
+console.log("")
+console.log("")
+console.log("")
+console.log("")
+console.log("")
+console.log("")
+console.log("")
+
+console.log("Bem vindo ao Sistema de Empréstimo Gladious-Spei")
+let loop: string = "sim"
+while(loop === "sim"){
+console.log("Para realizar o pagamento informe a baixo o nome do credor e do devedor: ");
+let credor: string = prompt("Credor: ")
+let devedor: string = prompt("Devedor: ")
+sistema.obterEmprestimos(credor, devedor)
+let pagamentoIndex: string = prompt("Selecione o número do empréstimo a pagar: ")
+let senhaCredor: string = prompt("Informe a senha do credor: ");
+sistema.pagarEmprestimo(sistema.emprestimos[Number(pagamentoIndex)], senhaCredor)
+loop = prompt("Deseja realizar outro pagamento? (sim ou nao): ")
+if(loop === "nao"){
+  break;
+  } 
+}
 
 //Senha: 2963
