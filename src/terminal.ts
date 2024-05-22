@@ -1,6 +1,5 @@
-import { Usuario, Emprestimo, Sistema } from "./emprestimo";
+import { Usuario, Emprestimo, sistema} from "./emprestimo";
 
-const sistema = new Sistema();
 sistema.novoUsuario(new Usuario("pedro", "123"));
 sistema.novoUsuario(new Usuario("maria", "456"));
 sistema.novoUsuario(new Usuario("joao", "789"));

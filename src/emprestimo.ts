@@ -110,6 +110,8 @@ class Sistema implements ISistema {
   }
 }
 
-//Senha: 2963
+const sistema = new Sistema()
 
-export { Usuario, Emprestimo, Sistema };
+export { Usuario, Emprestimo, sistema };
+
+//Senha: 2963
