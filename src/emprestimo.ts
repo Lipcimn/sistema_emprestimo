@@ -15,7 +15,7 @@ interface ISistema {
   emprestimos: IEmprestimo[];
   juros: number;
   novoUsuario: (usuario: IUsuario) => void;
-  novoEmprestimo: (emprestimo: IEmprestimo) => void;
+  realizarEmprestimo: (nm_devedor: string, nm_credor: string, valor: number, data: string, senha: string) => void;
   obterEmprestimos: (nm_credor: string, nm_devedor: string) => void;
   obterValorAtualizado: (valor: number, data: Date) => number;
   pagarEmprestimo: (slc_emprestimo: IEmprestimo, id: string) => void;
@@ -61,9 +61,26 @@ class Sistema implements ISistema {
       console.log("Usuário já existe no sistema.");
     }
   }
-  novoEmprestimo(emprestimo: IEmprestimo) {
-    this.emprestimos.push(emprestimo);
-    console.log("Emprestimo efetuado com sucesso!");
+  realizarEmprestimo(nm_devedor: string, nm_credor: string, valor: number, data: string, senha_devedor: string) {
+    const devedorExiste: IUsuario | undefined = this.usuarios.find(element => element.nome === nm_devedor)
+    const credorExiste: IUsuario | undefined = this.usuarios.find(element => element.nome === nm_credor)
+    if(devedorExiste !== undefined && credorExiste !== undefined){
+      if(senha_devedor === devedorExiste.senha){
+        try{
+          const date = new Date(data)
+          this.emprestimos.push(new Emprestimo(date, valor, credorExiste, devedorExiste))
+        }
+        catch(error){
+          console.log(error)
+        }
+      }
+      else{
+        console.log("Senha do devedor incorreta.")
+      }
+    }
+    else{
+      console.log("Credor ou Devedor não existem no sistema.")
+    }
   }
   obterEmprestimos(nm_credor: string, nm_devedor: string): void {
     const listaEmprestimos: IEmprestimo[] = this.emprestimos.filter(
