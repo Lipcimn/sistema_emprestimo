@@ -146,5 +146,3 @@ class Sistema implements ISistema {
 const sistema = new Sistema();
 
 export { Usuario, Emprestimo, sistema };
-
-//Senha: 2963
